@@ -92,6 +92,7 @@
             this.Controls.Add(this.MonitorBox);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
