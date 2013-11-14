@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.toBox = new System.Windows.Forms.TextBox();
             this.MonitorBox = new System.Windows.Forms.TextBox();
             this.BrowseMonitor = new System.Windows.Forms.Button();
             this.ToButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.StartMonitor = new System.Windows.Forms.Button();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // toBox
@@ -80,6 +83,13 @@
             this.StartMonitor.UseVisualStyleBackColor = true;
             this.StartMonitor.Click += new System.EventHandler(this.StartMonitor_Click);
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "notifyIcon1";
+            this.notifyIcon.Visible = true;
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -93,6 +103,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
+            this.Resize += new System.EventHandler(this.Form_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -106,6 +117,7 @@
         private System.Windows.Forms.Button ToButton;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button StartMonitor;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
 
     }
 }

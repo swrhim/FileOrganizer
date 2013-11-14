@@ -37,10 +37,11 @@ namespace FileOrganizer
             //TODO: Remember to dispose of the object when it is done.
             
 #if DEBUG
-            this.MonitorBox.Text = @"C:\Users\Daniel\Downloads\TEST";
-            this.toBox.Text = @"C:\Users\Daniel\Desktop\Testmove";
+            this.MonitorBox.Text = @"C:\Users\Daniel\Desktop\From";
+            this.toBox.Text = @"C:\Users\Daniel\Desktop\To";
 #endif
-            
+            notifyIcon.BalloonTipText = "FileOrg Minimized.";
+            notifyIcon.BalloonTipTitle = "FileOrg";
         }
 
         /// <summary>
@@ -112,12 +113,40 @@ namespace FileOrganizer
         }
 
         /// <summary>
+        /// event for resizing the window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                ShowInTaskbar = false;
+                notifyIcon.Visible = true;
+                notifyIcon.ShowBalloonTip(1000);
+            }
+        }
+
+        /// <summary>
+        /// Event handler for when the icon is double clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ShowInTaskbar = true;
+            notifyIcon.Visible = false;
+            WindowState = FormWindowState.Normal;
+        }
+
+        /// <summary>
         /// event for new files
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
+            var toLocation = this.toBox.Text;
             if (string.IsNullOrWhiteSpace(this.toBox.Text))
             {
                 //to box is empty!
@@ -131,8 +160,9 @@ namespace FileOrganizer
             }
 
             //if we're out of the loop then the file is not locked
-            File.Move(e.FullPath, this.toBox.Text);
-
+            toLocation = toLocation + @"\" + e.Name;
+            File.Move(e.FullPath, toLocation);
+            MessageBox.Show("Finished");
         }
 
         private void OnFormClosed(object sender, FormClosedEventArgs e)
