@@ -1,4 +1,7 @@
-﻿using System;
+﻿using System.Configuration;
+using FileOrganizer.Properties;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -42,6 +45,24 @@ namespace FileOrganizer
 #endif
             notifyIcon.BalloonTipText = "FileOrg Minimized.";
             notifyIcon.BalloonTipTitle = "FileOrg";
+
+            if (this.CheckIfRegistryExists(Application.ProductName))
+                this.autoStart.Checked = true;
+            else
+                this.autoStart.Checked = false;
+
+
+            //check if the esttings exist. If so, start the threads.
+            if (Properties.Settings.Default.Properties.Count > 0)
+            {
+                //get the key
+                var key = "Settings" + Properties.Settings.Default.Properties.Count;
+
+                var value = Properties.Settings.Default.Settings
+                //start the threads
+                this.StartMonitor.PerformClick();
+            }
+
         }
 
         /// <summary>
@@ -190,5 +211,55 @@ namespace FileOrganizer
 
         #endregion
 
+        private void autoStart_CheckedChanged(object sender, EventArgs e)
+        {
+            if ((sender as CheckBox).Checked)
+                SetAutoStart(Application.ProductName, true);
+            else
+                SetAutoStart(Application.ProductName, false);
+        }
+
+        private void SetAutoStart(string appName, bool enable)
+        {
+            string runKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+            RegistryKey startUpKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(runKey);
+            if (enable)
+            {
+                if (!CheckIfRegistryExists(appName))
+                {
+                    startUpKey.Close();
+                    startUpKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(runKey, true);
+                    startUpKey.SetValue(appName, Application.ExecutablePath.ToString());
+                    startUpKey.Close();
+                }
+            }
+            else
+            {
+                startUpKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(runKey, true);
+                startUpKey.DeleteValue(appName, false);
+                startUpKey.Close();
+            }
+        }
+
+        private bool CheckIfRegistryExists(string appName)
+        {
+            string runKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+            RegistryKey startUpKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(runKey);
+            if (startUpKey.GetValue(appName) == null)
+                return false;
+            else
+                return true;
+        }
+
+        private void SaveSettings_MouseClick(object sender, MouseEventArgs e)
+        {
+            //create the settings:
+            string saveSettings = this.MonitorBox.Text + ";" + this.toBox.Text;
+            var keyCount = Properties.Settings.Default.Properties.Count;
+            var keyName = "Settings" + keyCount;
+            
+            //Properties.Settings.Default.Properties.Add(keyName, saveSettings);
+            Properties.Settings.Default.Save();
+        }
     }
 }

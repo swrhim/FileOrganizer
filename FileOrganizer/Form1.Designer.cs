@@ -37,6 +37,8 @@
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.StartMonitor = new System.Windows.Forms.Button();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.autoStart = new System.Windows.Forms.CheckBox();
+            this.SaveSettings = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // toBox
@@ -90,11 +92,34 @@
             this.notifyIcon.Visible = true;
             this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
+            // autoStart
+            // 
+            this.autoStart.AutoSize = true;
+            this.autoStart.Location = new System.Drawing.Point(83, 196);
+            this.autoStart.Name = "autoStart";
+            this.autoStart.Size = new System.Drawing.Size(108, 17);
+            this.autoStart.TabIndex = 5;
+            this.autoStart.Text = "Run On StartUp?";
+            this.autoStart.UseVisualStyleBackColor = true;
+            this.autoStart.CheckedChanged += new System.EventHandler(this.autoStart_CheckedChanged);
+            // 
+            // SaveSettings
+            // 
+            this.SaveSettings.Location = new System.Drawing.Point(190, 226);
+            this.SaveSettings.Name = "SaveSettings";
+            this.SaveSettings.Size = new System.Drawing.Size(82, 23);
+            this.SaveSettings.TabIndex = 6;
+            this.SaveSettings.Text = "Save Settings";
+            this.SaveSettings.UseVisualStyleBackColor = true;
+            this.SaveSettings.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SaveSettings_MouseClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.SaveSettings);
+            this.Controls.Add(this.autoStart);
             this.Controls.Add(this.StartMonitor);
             this.Controls.Add(this.ToButton);
             this.Controls.Add(this.BrowseMonitor);
@@ -118,6 +143,8 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Button StartMonitor;
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.CheckBox autoStart;
+        private System.Windows.Forms.Button SaveSettings;
 
     }
 }
