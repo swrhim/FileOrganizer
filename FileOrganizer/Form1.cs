@@ -58,7 +58,10 @@ namespace FileOrganizer
                 //get the key
                 var key = "Settings" + Properties.Settings.Default.Properties.Count;
 
-                var value = Properties.Settings.Default.Settings
+                var value = Properties.Settings.Default[key] as string;
+                var values = value.Split(';');
+                this.MonitorBox.Text = values[0];
+                this.toBox.Text = values[1];
                 //start the threads
                 this.StartMonitor.PerformClick();
             }
@@ -253,12 +256,18 @@ namespace FileOrganizer
 
         private void SaveSettings_MouseClick(object sender, MouseEventArgs e)
         {
+            var property = new SettingsProperty(Settings.Default.Properties["<baseSetting>"]);
+            property.Name = "<dynamicSettingName>";
+            Settings.Default.Properties.Add(property);
+            // will have the stored value:
+            var dynamicSetting = Settings.Default["<dynamicSettingName>"];
+
             //create the settings:
             string saveSettings = this.MonitorBox.Text + ";" + this.toBox.Text;
             var keyCount = Properties.Settings.Default.Properties.Count;
             var keyName = "Settings" + keyCount;
-            
-            //Properties.Settings.Default.Properties.Add(keyName, saveSettings);
+
+            Properties.Settings.Default[keyName] = saveSettings;
             Properties.Settings.Default.Save();
         }
     }
