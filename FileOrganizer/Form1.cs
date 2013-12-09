@@ -53,17 +53,18 @@ namespace FileOrganizer
 
 
             //check if the esttings exist. If so, start the threads.
-            if (Properties.Settings.Default.Properties.Count > 0)
+            var settings = UserSettingHelper.LoadSettings();
+            if (settings.Count > 0)
             {
-                //get the key
-                var key = "Settings" + Properties.Settings.Default.Properties.Count;
-
-                var value = Properties.Settings.Default[key] as string;
-                var values = value.Split(';');
-                this.MonitorBox.Text = values[0];
-                this.toBox.Text = values[1];
-                //start the threads
-                this.StartMonitor.PerformClick();
+                foreach (var setting in settings)
+                {
+                    if (setting.User == System.Security.Principal.WindowsIdentity.GetCurrent().Name)
+                    {
+                        this.MonitorBox.Text = setting.Watch;
+                        this.toBox.Text = setting.Send;
+                        StartMonitor_Click(this, new EventArgs());
+                    }
+                }
             }
 
         }
@@ -256,19 +257,17 @@ namespace FileOrganizer
 
         private void SaveSettings_MouseClick(object sender, MouseEventArgs e)
         {
-            var property = new SettingsProperty(Settings.Default.Properties["<baseSetting>"]);
-            property.Name = "<dynamicSettingName>";
-            Settings.Default.Properties.Add(property);
-            // will have the stored value:
-            var dynamicSetting = Settings.Default["<dynamicSettingName>"];
+            var userSetting = new Setting
+            {
+                Send = this.toBox.Text,
+                Watch = this.MonitorBox.Text,
+                User = System.Security.Principal.WindowsIdentity.GetCurrent().Name
+            };
 
-            //create the settings:
-            string saveSettings = this.MonitorBox.Text + ";" + this.toBox.Text;
-            var keyCount = Properties.Settings.Default.Properties.Count;
-            var keyName = "Settings" + keyCount;
+            var list = new List<Setting>();
+            list.Add(userSetting);
 
-            Properties.Settings.Default[keyName] = saveSettings;
-            Properties.Settings.Default.Save();
+            UserSettingHelper.SaveSettings(list);
         }
     }
 }
